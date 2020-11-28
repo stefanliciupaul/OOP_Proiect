@@ -84,7 +84,25 @@ public:
             strcpy(this->input[i], cp.input[i]);
         }
     }
-    
+    CommandParser operator=(const CommandParser& cp) {
+        if (this != &cp) {
+            this->reader = cp.reader;
+            this->nrWords = cp.nrWords;
+            if (this->input != nullptr) {
+                for (int i = 0; i < this->nrWords; i++)
+                    delete[] this->input[i];
+                delete[] this->input;
+            }
+            this->input = new char* [this->nrWords];
+            for (int i = 0; i < this->nrWords; i++) {
+                this->input[i] = new char[strlen(cp.input[i]) + 1];
+            }
+            for (int i = 0; i < this->nrWords; i++) {
+                strcpy(this->input[i], cp.input[i]);
+            }
+        }
+        return *this;
+    }
     //the destroyer
     ~CommandParser() {
         if (this->input != nullptr) {
