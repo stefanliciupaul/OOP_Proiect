@@ -6,7 +6,7 @@ class ProjectExceptionInsertInto : exception
 };
 
 class InsertInto {
-	string tableName = "";
+	string tableName = ""; //Table name
 	char** input = nullptr; //Matrix with all words in the input
 	int nrWords = 0; //Number of words in the input, matrix
 

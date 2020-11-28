@@ -5,6 +5,7 @@
 #include "DropIndex.h"
 #include "DisplayTable.h"
 #include "InsertInto.h"
+#include "DeleteFrom.h"
 using namespace std;
 
 class ProjectExceptionParser : exception
@@ -44,12 +45,12 @@ public:
             strcpy(input, this->reader.c_str()); 
             char cuv[20][INPUT_LENGHT_MAX];       //makes matrix of words
             char* p;
-            p = strtok(input, " (),");
+            p = strtok(input, " (),=");
             while (p != NULL)
             {
                 strcpy(cuv[this->nrWords], p);
                 this->nrWords++;
-                p = strtok(NULL, " (),");
+                p = strtok(NULL, " (),=");
             }
             
             this->input = new char* [this->nrWords];  //copies matrix of words into class atribute input
@@ -163,6 +164,17 @@ public:
                 delete err;
             }
         }
+        if ((_stricmp(this->input[0], "DELETE") == 0) && (_stricmp(this->input[1], "FROM") == 0) && (_stricmp(this->input[3], "WHERE") == 0)) {
+            DeleteFrom del(this->input + 2, this->nrWords);
+            ok = 1;
+            try {
+                del.startDelete();
+            }
+            catch (ProjectExceptionDeleteFrom* err) {
+                cout << endl << "Invalid DELETE FROM command format";
+                delete err;
+            } 
+        }
         if (ok == 0) {
             cout << endl << "Invalid input";
         }
@@ -187,6 +199,10 @@ public:
                         return 0;
                     }
                     if ((_stricmp(this->input[0], "INSERT") == 0) && (_stricmp(this->input[1], "INTO") == 0)) {
+                        throw new ProjectExceptionParser("Too few arguments");
+                        return 0;
+                    }
+                    if ((_stricmp(this->input[0], "DELETE") == 0) && (_stricmp(this->input[1], "FROM") == 0)) {
                         throw new ProjectExceptionParser("Too few arguments");
                         return 0;
                     }
